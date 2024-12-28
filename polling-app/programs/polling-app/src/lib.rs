@@ -4,9 +4,9 @@ pub mod error;
 pub mod state;
 pub mod constant;
 
-use crate::{error::*, state::*, constant::*};
-
 declare_id!("AEaXC6N4s4eFDoASXjaWH7r9RRKv6XGdqbHQLnNUx9m9");
+
+use crate::{error::*, state::*, constant::*};
 
 #[program]
 pub mod polling_app {

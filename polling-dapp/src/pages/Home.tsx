@@ -2,9 +2,9 @@ import SimpleForm from "@/components/CreatePoll"
 import { Navbar } from "@/components/Navbar";
 import PollDisplay from "@/components/PollDisplay";
 import { Poll } from "@/types/Poll";
-import { useState } from "react";
 
 export const Home = () => {
+
 	const polls: Poll[] = [
 		{
 			description: "What's your favorite color?jufvbf vbf nb gfb gfb gfb gfb gfb gf ngh fbx vdf nsbafdsb gsd fbv afdsv dafbvdafba fdb fda bafd",
@@ -38,7 +38,6 @@ export const Home = () => {
 		},
 	];
 
-	const [addNew, setAddNew] = useState(false);
 	return (
 		<div className="w-screen h-screen text-[#000000] bg-[#ffffff]">
 			<Navbar />
