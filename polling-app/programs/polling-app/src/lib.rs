@@ -4,7 +4,7 @@ pub mod error;
 pub mod state;
 pub mod constant;
 
-declare_id!("AEaXC6N4s4eFDoASXjaWH7r9RRKv6XGdqbHQLnNUx9m9");
+declare_id!("AJ6SR4vdRH2XjmdSsKehLZiJhzwuvLvcip99GrJiaQem");
 
 use crate::{error::*, state::*, constant::*};
 
@@ -155,7 +155,7 @@ pub struct MakePoll<'info> {
 
     #[account(
         init,
-        seeds = [POLL_TAG, authority.key().as_ref(), &[user_profile.total_polls as u8].as_ref()],
+        seeds = [POLL_TAG, authority.key().as_ref(), &[user_profile.total_polls as u8]],
         bump,
         payer = authority,
         space = 8 + std::mem::size_of::<PollAccount>(),
@@ -173,7 +173,7 @@ pub struct SelectOption<'info> {
 
     #[account(
         mut,
-        seeds = [POLL_TAG, authority.key().as_ref(), &[poll_idx].as_ref()],
+        seeds = [POLL_TAG, authority.key().as_ref(), &[poll_idx]],
         bump,
         has_one = authority,
     )]
@@ -199,7 +199,7 @@ pub struct RemovePoll<'info> {
     #[account(
         mut,
         close = authority,
-        seeds = [POLL_TAG, authority.key().as_ref(), &[poll_idx].as_ref()],
+        seeds = [POLL_TAG, authority.key().as_ref(), &[poll_idx]],
         bump,
         has_one = authority,
     )]
@@ -215,7 +215,7 @@ pub struct GetPollDetails<'info> {
     pub authority: Signer<'info>,
 
     #[account(
-        seeds = [POLL_TAG, authority.key().as_ref(), &[poll_idx].as_ref()],
+        seeds = [POLL_TAG, authority.key().as_ref(), &[poll_idx]],
         bump,
         has_one = authority,
     )]
