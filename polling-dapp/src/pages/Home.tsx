@@ -41,6 +41,7 @@ export const Home = () => {
 	return (
 		<div className="w-screen h-screen text-[#000000] bg-[#ffffff]">
 			<Navbar />
+
 			<div className="container mx-auto p-4 pt-20">
 			  <div className="columns-1 md:columns-2 lg:columns-3 gap-4">
 				<div className="break-inside-avoid-column mb-4">

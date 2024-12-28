@@ -1,16 +1,14 @@
 import { Route, Routes } from 'react-router-dom'
 import { useMemo } from 'react';
-import './App.css'
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { UnsafeBurnerWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 
+import './App.css'
 import '@solana/wallet-adapter-react-ui/styles.css';
 
 import { Home } from './pages/Home'
-
 
 function App() {
     const network = WalletAdapterNetwork.Devnet;
@@ -18,9 +16,7 @@ function App() {
     const endpoint = useMemo(() => clusterApiUrl(network), [network]);
  
     const wallets = useMemo(
-        () => [
-            new UnsafeBurnerWalletAdapter(),
-        ],
+        () => [],
         [network]
     );
 	return (
