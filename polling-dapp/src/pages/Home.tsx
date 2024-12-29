@@ -1,9 +1,9 @@
-import { fetchUser, initializeUser } from "@/anchor/methods";
+import { fetchUser, fetchUserDetails, initializeUser } from "@/anchor/methods";
 import { profileState } from "@/atom";
 import SimpleForm from "@/components/CreatePoll"
 import { Navbar } from "@/components/Navbar";
 import PollDisplay from "@/components/PollDisplay";
-import { Poll } from "@/types/Poll";
+import { PollData } from "@/types/Poll";
 import useAlert from "@/utility/useAlert";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { BookCheck, LucideAlertCircle } from "lucide-react";
@@ -13,6 +13,7 @@ import { useRecoilState } from "recoil";
 export const Home = () => {
 	const [profileAccount, setProfileAccount] = useRecoilState(profileState);
 	const [loading, setLoading] = useState(false);
+	const [pollData, setPollData] = useState<PollData[] | null>(null);
 	const { publicKey, sendTransaction } = useWallet();
 	const { showAlert } = useAlert();
 	const { connection } = useConnection();
@@ -42,6 +43,27 @@ export const Home = () => {
 		fetchData();
 	}, [publicKey]);
 
+	useEffect(() => {
+		const fetchUserData = async () => {
+			if(!publicKey) {
+			  setProfileAccount({
+			    authority: null,
+			    totalPolls: 0,
+			  });
+			  return;
+			}
+		
+			const fetchedPollData = await fetchUserDetails(publicKey);
+			if(!fetchedPollData) {
+				setPollData(null)
+				return;
+			};
+			setPollData(fetchedPollData);
+		}
+
+		fetchUserData();
+	}, [publicKey]);
+
 	const initUser = async () => {
 		if(!publicKey) {
 			setProfileAccount({
@@ -60,7 +82,6 @@ export const Home = () => {
 		}
 
 		const profile = await initializeUser(publicKey, sendTransaction, connection);
-		console.log(profile);
 
 		if(!profile || !profile.authority) {
 			setProfileAccount({
@@ -88,15 +109,6 @@ export const Home = () => {
 		setLoading(false);
 	}
 
-	const polls: Poll[] = [
-		{
-			description: "What's your favorite color?jufvbf vbf nb gfb gfb gfb gfb gfb gf ngh fbx vdf nsbafdsb gsd fbv afdsv dafbvdafba fdb fda bafd",
-			option1: "Blue",
-			option2: "Red",
-			endTime: new Date('2024-12-31'),
-		}
-	];
-
 	return (
 		<div className="w-screen h-screen text-[#000000] bg-[#ffffff]">
 			<Navbar />
@@ -108,16 +120,20 @@ export const Home = () => {
 						</div>
 						
 						{/* PollDisplays */}
-						{polls.map((poll, index) => (
-							<div key={index} className="break-inside-avoid-column mb-4">
-							<PollDisplay
-								description={poll.description}
-								option1={poll.option1}
-								option2={poll.option2}
-								endTime={poll.endTime}
-							/>
-							</div>
-						))}
+						{pollData && pollData.length > 0 ? (
+							pollData.map((poll, index) => (
+								<div key={index} className="break-inside-avoid-column mb-4">
+								<PollDisplay
+									description={poll.description}
+									option1={poll.option1}
+									option2={poll.option2}
+									endTime={new Date(poll.endTime * 1000)}
+								/>
+								</div>
+							))
+							) : (
+							<p>No polls available.</p>
+						)}
 					</div>
 				</div>
 			: 

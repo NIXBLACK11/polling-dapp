@@ -119,34 +119,48 @@ export const fetchUser = async (
 	}
 }
 
-// export const fetchUserDetails = async (
-//     publicKey: web3.PublicKey,
-// ) => {
-//     const [userProfilePDA, _] = web3.PublicKey.findProgramAddressSync(
-//         [
-//             Buffer.from(USER_TAG),
-//             publicKey.toBuffer(),
-//         ],
-//         program.programId
-//     );
-//     const [pollAccountPDA, _b] = web3.PublicKey.findProgramAddressSync(
-//         [
-//             Buffer.from(POLL_TAG),
-//             publicKey.toBuffer(),
-//         ],
-//         program.programId
-//     );
+export const fetchUserDetails = async (
+    publicKey: web3.PublicKey,
+) => {
+    const [userProfilePDA, _] = web3.PublicKey.findProgramAddressSync(
+        [
+            Buffer.from(USER_TAG),
+            publicKey.toBuffer(),
+        ],
+        program.programId
+    );
 
-//     let profile;
-// 	try {
-// 		profile = await program.account.userProfile.fetch(userProfilePDA);
-// 	} catch(err: any) {
-// 		return null;
-// 	}
+    let profile;
+	try {
+		profile = await program.account.userProfile.fetch(userProfilePDA);
+	} catch(err: any) {
+		return null;
+	}
 
-//     const total_polls = profile.totalPolls;
+    const total_polls = profile.totalPolls;
+    let userPollDetails = [];
 
-//     for(let idx = 0; idx<total_polls;idx++) {
+    for(let idx = 0; idx<total_polls;idx++) {
+        const [pollAccountPDA, _b] = web3.PublicKey.findProgramAddressSync(
+            [
+                Buffer.from(POLL_TAG),
+                publicKey.toBuffer(),
+                Buffer.from([idx])
+            ],
+            program.programId
+        );
 
-//     }
-// };
+        let pollDetail;
+        try {
+            pollDetail = await program.account.pollAccount.fetch(pollAccountPDA);
+        } catch(err: any) {
+            pollDetail = null;
+        }
+
+        if(pollDetail) {
+            userPollDetails.push(pollDetail);
+        }
+    }
+
+    return userPollDetails;
+};
