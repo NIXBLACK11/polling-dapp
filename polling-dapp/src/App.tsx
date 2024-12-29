@@ -9,6 +9,24 @@ import './App.css'
 import '@solana/wallet-adapter-react-ui/styles.css';
 
 import { Home } from './pages/Home'
+import { useRecoilValue } from 'recoil';
+import { alertState } from './atom';
+import CustomAlert from './components/Alert';
+
+const GlobalAlert = () => {
+    const alert = useRecoilValue(alertState);
+  
+    if (!alert.visible) return null;
+  
+    return (
+      <CustomAlert
+        icon={alert.icon}
+        title={alert.title}
+        description={alert.description}
+        className={alert.className}
+      />
+    );
+  };
 
 function App() {
     const network = WalletAdapterNetwork.Devnet;
@@ -23,6 +41,7 @@ function App() {
 		<ConnectionProvider endpoint={endpoint}>
             <WalletProvider wallets={wallets} autoConnect>
                 <WalletModalProvider>
+                    <GlobalAlert />
 					<Routes>
 						<Route path="/" element={<Home />} />
 					</Routes>

@@ -1,10 +1,12 @@
-import { Vote } from 'lucide-react';
+import { LucideAlertCircle, Vote } from 'lucide-react';
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
 import { initializeUser } from "@/anchor/methods";
+import useAlert from '@/utility/useAlert';
 
 export const Navbar = () => {
   const { publicKey, sendTransaction } = useWallet();
+  const { showAlert } = useAlert();
   const { connection } = useConnection();
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
@@ -16,19 +18,29 @@ export const Navbar = () => {
                 </div>
                 <WalletMultiButton />
                 <button
-				className="bg-red-500"
-				onClick={()=>{
-          if(!publicKey || !sendTransaction) {
-            console.log("Empty tx");
-            return;
-          }
-					const tx = initializeUser(publicKey, sendTransaction, connection);
-          if(!tx) {
-            console.log("Empty tx");
-            return;
-          }
-				}}
-			>Click me</button>
+                  className="bg-red-500"
+                  onClick={async ()=>{
+                    if(!publicKey || !sendTransaction) {
+                      console.log("publicKey or senTransaction not provided");
+                      showAlert({
+                        icon: LucideAlertCircle,
+                        title: "Error",
+                        description: "To create first you need to connect your wallet!",
+                        className: "destructive",
+                        duration: 3000,
+                      });
+                      return;
+                    }
+
+                    const tx = await initializeUser(publicKey, sendTransaction, connection);
+                    if(!tx) {
+                      console.log("Empty tx");
+                      return;
+                    }
+
+                    console.log(tx);
+                  }}
+			          >Click me</button>
             </div>
         </div>
     </div>
