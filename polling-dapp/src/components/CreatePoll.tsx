@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
+import { BookCheck, CalendarIcon, LucideAlertCircle } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -23,6 +23,13 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { makePoll } from "@/anchor/methods"
+import { useConnection, useWallet } from "@solana/wallet-adapter-react"
+import useAlert from "@/utility/useAlert"
+import { useRecoilState } from "recoil"
+import { profileState } from "@/atom"
+import { BN } from "@coral-xyz/anchor"
+import { useState } from "react"
 
 const formSchema = z.object({
   description: z.string().min(10, {
@@ -40,6 +47,12 @@ const formSchema = z.object({
 })
 
 export function PollForm() {
+	const [_profileAccount, setProfileAccount] = useRecoilState(profileState);
+  const [loading, setLoading] = useState(false);
+  const { publicKey, sendTransaction } = useWallet();
+	const { showAlert } = useAlert();
+	const { connection } = useConnection();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,8 +62,46 @@ export function PollForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const endTime = new Date(values.endTime);
+    const unixEpochTime = Math.floor(endTime.getTime() / 1000);
+
+    if(!publicKey) {
+        showAlert({
+          icon: LucideAlertCircle,
+          title: "User does not exist",
+          description: "To create first you need to connect your wallet!",
+          className: "destructive",
+          duration: 3000,
+        });
+        setProfileAccount({
+					authority: null,
+					totalPolls: 0,
+				});
+        setLoading(false);
+        return;
+    }
+
+    const tx = await makePoll(publicKey, sendTransaction, connection, values.description, values.option1, values.option2, new BN(unixEpochTime));
+
+    if(!tx) {
+			showAlert({
+				icon: LucideAlertCircle,
+				title: "Error in creating Poll",
+				description: "Retry after sometime",
+				duration: 3000,
+			});
+		} else {
+			showAlert({
+				icon: BookCheck,
+				title: "Poll created successfully",
+				description: "Your poll is live now!!",
+				duration: 3000,
+			});
+		}
+    form.reset();
+    setLoading(false);
   }
 
   return (
@@ -149,7 +200,11 @@ export function PollForm() {
               )}
             />
 
-            <Button type="submit" className="w-full">Create Poll</Button>
+            {(loading) ? 
+              <Button className="w-full">Loading...</Button>
+              : 
+              <Button type="submit" className="w-full">Create Poll</Button>
+            }
           </form>
         </Form>
       </CardContent>

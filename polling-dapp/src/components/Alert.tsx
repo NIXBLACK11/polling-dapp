@@ -19,7 +19,7 @@ const CustomAlert = ({
   className = "default",
 }: AlertProps) => {
   return (
-    <div className="h-screen w-screen bg-transparent flex items-center justify-center absolute">
+    <div className="h-screen w-screen bg-transparent flex items-center justify-center absolute z-50">
       <Alert variant={className} className="bg-white w-2/6">
         {Icon && <Icon className="h-4 w-4" />}
         {title && <AlertTitle>{title}</AlertTitle>}

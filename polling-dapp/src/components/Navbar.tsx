@@ -1,13 +1,10 @@
-import { LucideAlertCircle, Vote } from 'lucide-react';
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-
-import { initializeUser } from "@/anchor/methods";
-import useAlert from '@/utility/useAlert';
+import { fetchUser } from '@/anchor/methods';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { Vote } from 'lucide-react';
 
 export const Navbar = () => {
-  const { publicKey, sendTransaction } = useWallet();
-  const { showAlert } = useAlert();
-  const { connection } = useConnection();
+  const { publicKey } = useWallet();
   return (
     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
         <div className="container mx-auto px-4">
@@ -18,29 +15,16 @@ export const Navbar = () => {
                 </div>
                 <WalletMultiButton />
                 <button
-                  className="bg-red-500"
-                  onClick={async ()=>{
-                    if(!publicKey || !sendTransaction) {
-                      console.log("publicKey or senTransaction not provided");
-                      showAlert({
-                        icon: LucideAlertCircle,
-                        title: "Error",
-                        description: "To create first you need to connect your wallet!",
-                        className: "destructive",
-                        duration: 3000,
-                      });
+                  onClick={()=>{
+                    if(!publicKey) {
+                      console.log("No pub key");
                       return;
                     }
-
-                    const tx = await initializeUser(publicKey, sendTransaction, connection);
-                    if(!tx) {
-                      console.log("Empty tx");
-                      return;
-                    }
-
-                    console.log(tx);
+                    fetchUser(publicKey);
                   }}
-			          >Click me</button>
+                >
+                  Click me!!
+                </button>
             </div>
         </div>
     </div>
