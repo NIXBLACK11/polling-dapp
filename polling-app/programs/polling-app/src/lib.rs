@@ -81,8 +81,10 @@ pub mod polling_app {
 
         if poll_account.option1_count > poll_account.option2_count {
             poll_account.winner = 1;
-        } else {
+        } else if poll_account.option1_count < poll_account.option2_count {
             poll_account.winner = 2;
+        } else {
+            poll_account.winner = -1;
         }
         
         Ok(())
@@ -173,9 +175,8 @@ pub struct SelectOption<'info> {
 
     #[account(
         mut,
-        seeds = [POLL_TAG, authority.key().as_ref(), &[poll_idx]],
+        seeds = [POLL_TAG, poll_account.authority.as_ref(), &[poll_idx]],
         bump,
-        has_one = authority,
     )]
     pub poll_account: Box<Account<'info, PollAccount>>,
 

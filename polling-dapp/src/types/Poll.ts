@@ -9,6 +9,7 @@ export type Poll = {
 };
 
 export type PollData = {
+    polled: boolean;
     idx: number;
     authority: PublicKey;
     description: string;

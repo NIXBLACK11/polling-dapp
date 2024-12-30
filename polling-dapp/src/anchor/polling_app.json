@@ -257,10 +257,7 @@
         {
           "name": "authority",
           "writable": true,
-          "signer": true,
-          "relations": [
-            "poll_account"
-          ]
+          "signer": true
         },
         {
           "name": "poll_account",

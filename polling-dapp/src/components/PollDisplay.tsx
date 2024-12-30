@@ -3,18 +3,46 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
+import { PublicKey } from '@solana/web3.js';
+import { selectOption } from '@/anchor/methods';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useRecoilState } from 'recoil';
+import { profileState } from '@/atom';
+import useAlert from '@/utility/useAlert';
+import { BookCheck, LucideAlertCircle } from 'lucide-react';
+import { Progress } from './ui/progress';
 
 interface PollProps {
+  polled: boolean;
+  authority: PublicKey;
+  idx: number;
   description: string;
   option1: string;
   option2: string;
+  option1Count: number;
+  option2Count: number;
   endTime: Date;
 }
 
-const PollDisplay = ({ description, option1, option2, endTime }: PollProps) => {
-  const [selectedOption, setSelectedOption] = useState<string>("");
-  const [timeLeft, setTimeLeft] = useState<string>("");
+const PollDisplay = ({ polled, authority, idx, description, option1, option2, option1Count, option2Count, endTime }: PollProps) => {
+  const { showAlert } = useAlert();
+  const { connection } = useConnection();
   const [isExpired, setIsExpired] = useState(false);
+  const { publicKey, sendTransaction } = useWallet();
+  const [timeLeft, setTimeLeft] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [_profileAccount, setProfileAccount] = useRecoilState(profileState);
+  const [option1Percent, setOption1Percent] = useState<number>();
+  const [option2Percent, setOption2Percent] = useState<number>();  
+
+  useEffect(() => {
+    const totalVotes = option1Count + option2Count;
+    if(totalVotes==0) {
+      return;
+    }
+    setOption1Percent(Math.round((option1Count / totalVotes) * 100));
+    setOption2Percent(Math.round((option2Count / totalVotes) * 100));
+  })
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -39,11 +67,41 @@ const PollDisplay = ({ description, option1, option2, endTime }: PollProps) => {
     return () => clearInterval(timer);
   }, [endTime]);
 
-  const handleVote = () => {
+  const handleVote = async () => {
+    let option = -1;
     if (selectedOption) {
-      console.log(`Voted for: ${selectedOption}`);
-      // Here you would typically make an API call to submit the vote
+      if(selectedOption==option1) {
+        option  = 1;
+      } else {
+        option = 2;
+      }
     }
+
+    if(!publicKey) {
+      setProfileAccount({
+        authority: null,
+        totalPolls: 0,
+      });
+      return;
+    }
+
+    const tx = await selectOption(publicKey, sendTransaction, connection, authority, idx, option);
+
+    if(!tx) {
+			showAlert({
+				icon: LucideAlertCircle,
+				title: "You might have already made a choice, stick to it😠",
+				description: "Try some other poll",
+				duration: 3000,
+			});
+		} else {
+			showAlert({
+				icon: BookCheck,
+				title: "You have selected a option successfully!",
+				description: "Thanks for polling!!",
+				duration: 3000,
+			});
+		}
   };
 
   return (
@@ -53,6 +111,7 @@ const PollDisplay = ({ description, option1, option2, endTime }: PollProps) => {
         <p className="text-sm text-muted-foreground mt-2">Time remaining: {timeLeft}</p>
       </CardHeader>
       <CardContent className="space-y-6">
+        {polled==false ? 
         <div className="space-y-4">
           <p className="text-lg">{description}</p>
 
@@ -71,7 +130,26 @@ const PollDisplay = ({ description, option1, option2, endTime }: PollProps) => {
               <Label htmlFor="option2">{option2}</Label>
             </div>
           </RadioGroup>
-        </div>
+        </div> : 
+        <div className="space-y-4">
+          <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">{option1}</Label>
+                <span className="text-sm text-muted-foreground">{option1Percent}%</span>
+              </div>
+              <Progress value={option1Percent} className="h-2" />
+              <p className="text-xs text-muted-foreground text-right">{option1Count} votes</p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">{option2}</Label>
+                <span className="text-sm text-muted-foreground">{option2Percent}%</span>
+              </div>
+              <Progress value={option2Percent} className="h-2" />
+              <p className="text-xs text-muted-foreground text-right">{option2Count} votes</p>
+            </div>
+        </div>}
 
         <Button 
           className="w-full" 

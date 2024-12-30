@@ -263,10 +263,7 @@ export type PollingApp = {
         {
           "name": "authority",
           "writable": true,
-          "signer": true,
-          "relations": [
-            "pollAccount"
-          ]
+          "signer": true
         },
         {
           "name": "pollAccount",

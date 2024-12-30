@@ -110,10 +110,10 @@ export const Home = () => {
 	}
 
 	return (
-		<div className="w-screen h-screen text-[#000000] bg-[#ffffff]">
+		<div className="w-screen h-screen text-[#000000] bg-[#ffffff] overflow-x-hidden">
 			<Navbar />
 			{(profileAccount.authority!=null) ? 
-				<div className="container mx-auto p-4 pt-20">
+				<div className="container mx-auto py-20">
 					<div className="columns-1 md:columns-2 lg:columns-3 gap-4">
 						<div className="break-inside-avoid-column mb-4">
 								<SimpleForm />
@@ -124,9 +124,14 @@ export const Home = () => {
 							pollData.map((poll, index) => (
 								<div key={index} className="break-inside-avoid-column mb-4">
 								<PollDisplay
+									polled={poll.polled}
+									authority={poll.authority}
+									idx={poll.idx}
 									description={poll.description}
 									option1={poll.option1}
 									option2={poll.option2}
+									option1Count={poll.option1Count}
+									option2Count={poll.option2Count}
 									endTime={new Date(poll.endTime * 1000)}
 								/>
 								</div>
