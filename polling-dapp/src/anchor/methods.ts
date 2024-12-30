@@ -75,6 +75,7 @@ export const makePoll = async (
         ],
         program.programId
     );
+    console.log(pollAccountPDA);
 
     let transactionSignature;
 
@@ -163,6 +164,7 @@ export const fetchUserDetails = async (
             const updatedPollDetail = {
                 ...pollDetail,
                 polled: hasVoted,
+                pollAccountPDA: pollAccountPDA
             };
         
             userPollDetails.push(updatedPollDetail);
@@ -209,4 +211,29 @@ export const selectOption = async (
     }
 
     return transactionSignature;
+}
+
+export const fetchPoll = async (
+    publicKey: web3.PublicKey,
+    pollAccountPDA: web3.PublicKey
+) => {
+    let pollDetail;
+    try {
+        pollDetail = await program.account.pollAccount.fetch(pollAccountPDA);
+    } catch(err: any) {
+        return null;
+    }
+
+    let updatedPollDetail;
+    if (pollDetail) {
+        const hasVoted = pollDetail.voters.some(voter => voter.equals(publicKey));
+    
+        updatedPollDetail = {
+            ...pollDetail,
+            polled: hasVoted,
+            pollAccountPDA: pollAccountPDA
+        };
+    }
+
+    return updatedPollDetail;
 }

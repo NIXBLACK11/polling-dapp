@@ -133,6 +133,7 @@ export const Home = () => {
 									option1Count={poll.option1Count}
 									option2Count={poll.option2Count}
 									endTime={new Date(poll.endTime * 1000)}
+									pollAccountPDA={poll.pollAccountPDA}
 								/>
 								</div>
 							))

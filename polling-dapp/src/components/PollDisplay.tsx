@@ -9,7 +9,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useRecoilState } from 'recoil';
 import { profileState } from '@/atom';
 import useAlert from '@/utility/useAlert';
-import { BookCheck, LucideAlertCircle } from 'lucide-react';
+import { BookCheck, Copy, LucideAlertCircle } from 'lucide-react';
 import { Progress } from './ui/progress';
 
 interface PollProps {
@@ -22,9 +22,10 @@ interface PollProps {
   option1Count: number;
   option2Count: number;
   endTime: Date;
+  pollAccountPDA: PublicKey;
 }
 
-const PollDisplay = ({ polled, authority, idx, description, option1, option2, option1Count, option2Count, endTime }: PollProps) => {
+const PollDisplay = ({ polled, authority, idx, description, option1, option2, option1Count, option2Count, endTime, pollAccountPDA }: PollProps) => {
   const { showAlert } = useAlert();
   const { connection } = useConnection();
   const [isExpired, setIsExpired] = useState(false);
@@ -104,11 +105,46 @@ const PollDisplay = ({ polled, authority, idx, description, option1, option2, op
 		}
   };
 
+  const handleCopyLink = async () => {
+    try {
+      const pollUrl = `${window.location.origin}/share?poll=${pollAccountPDA}`;
+      await navigator.clipboard.writeText(pollUrl);
+      showAlert({
+				icon: LucideAlertCircle,
+				title: "Link copied!!",
+				description: "Share this to invite others",
+				duration: 3000,
+			});
+    } catch (err) {
+      showAlert({
+				icon: BookCheck,
+				title: "Unable to copy link!",
+				description: "Try after some time!!",
+				duration: 3000,
+			});
+    }
+  };
+
+
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
-        <CardTitle>Poll</CardTitle>
-        <p className="text-sm text-muted-foreground mt-2">Time remaining: {timeLeft}</p>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="text-lg font-medium">Poll</CardTitle>
+              <p className="text-sm text-muted-foreground mt-2">
+                Time remaining: {timeLeft}
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={handleCopyLink}
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {polled==false ? 

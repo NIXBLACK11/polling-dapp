@@ -20,4 +20,5 @@ export type PollData = {
     winner: number;
     endTime: BN;
     voters: PublicKey[];
+    pollAccountPDA: PublicKey;
 }
