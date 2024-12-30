@@ -27,7 +27,7 @@ import { makePoll } from "@/anchor/methods"
 import { useConnection, useWallet } from "@solana/wallet-adapter-react"
 import useAlert from "@/utility/useAlert"
 import { useRecoilState } from "recoil"
-import { profileState } from "@/atom"
+import { profileState, reloaderState } from "@/atom"
 import { BN } from "@coral-xyz/anchor"
 import { useState } from "react"
 
@@ -48,10 +48,11 @@ const formSchema = z.object({
 
 export function PollForm() {
 	const [_profileAccount, setProfileAccount] = useRecoilState(profileState);
-  const [loading, setLoading] = useState(false);
+  const [reloader, setReloader] = useRecoilState(reloaderState);
   const { publicKey, sendTransaction } = useWallet();
-	const { showAlert } = useAlert();
+  const [loading, setLoading] = useState(false);
 	const { connection } = useConnection();
+	const { showAlert } = useAlert();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -102,6 +103,7 @@ export function PollForm() {
 		}
     form.reset();
     setLoading(false);
+    setReloader(!reloader);
   }
 
   return (

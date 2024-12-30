@@ -7,7 +7,7 @@ import { PublicKey } from '@solana/web3.js';
 import { selectOption } from '@/anchor/methods';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useRecoilState } from 'recoil';
-import { profileState } from '@/atom';
+import { profileState, reloaderState } from '@/atom';
 import useAlert from '@/utility/useAlert';
 import { BookCheck, Copy, LucideAlertCircle } from 'lucide-react';
 import { Progress } from './ui/progress';
@@ -28,13 +28,15 @@ interface PollProps {
 const PollDisplay = ({ polled, authority, idx, description, option1, option2, option1Count, option2Count, endTime, pollAccountPDA }: PollProps) => {
   const { showAlert } = useAlert();
   const { connection } = useConnection();
+  const [loading, setLoading] = useState<string>();
   const [isExpired, setIsExpired] = useState(false);
   const { publicKey, sendTransaction } = useWallet();
   const [timeLeft, setTimeLeft] = useState<string>("");
-  const [selectedOption, setSelectedOption] = useState<string>("");
-  const [_profileAccount, setProfileAccount] = useRecoilState(profileState);
+  const [reloader, setReloader] = useRecoilState(reloaderState);
   const [option1Percent, setOption1Percent] = useState<number>();
   const [option2Percent, setOption2Percent] = useState<number>();  
+  const [selectedOption, setSelectedOption] = useState<string>("");
+  const [_profileAccount, setProfileAccount] = useRecoilState(profileState);
 
   useEffect(() => {
     const totalVotes = option1Count + option2Count;
@@ -69,6 +71,7 @@ const PollDisplay = ({ polled, authority, idx, description, option1, option2, op
   }, [endTime]);
 
   const handleVote = async () => {
+    setLoading("loading");
     let option = -1;
     if (selectedOption) {
       if(selectedOption==option1) {
@@ -103,6 +106,8 @@ const PollDisplay = ({ polled, authority, idx, description, option1, option2, op
 				duration: 3000,
 			});
 		}
+    setReloader(!reloader);
+    setLoading("vote")
   };
 
   const handleCopyLink = async () => {
@@ -169,6 +174,7 @@ const PollDisplay = ({ polled, authority, idx, description, option1, option2, op
             </div>
         </div>
         : 
+        <div>
         <div className="space-y-4">
           <p className="text-lg">{description}</p>
 
@@ -188,15 +194,15 @@ const PollDisplay = ({ polled, authority, idx, description, option1, option2, op
             </div>
           </RadioGroup>
         </div>
-        }
-
         <Button 
-          className="w-full" 
+          className="w-full mt-5" 
           disabled={!selectedOption || isExpired}
           onClick={handleVote}
         >
-          {isExpired ? "Poll Ended" : "Vote"}
+          {loading=="loading" ? "Loading..." : "Vote"}
         </Button>
+        </div>
+        }
       </CardContent>
     </Card>
   );

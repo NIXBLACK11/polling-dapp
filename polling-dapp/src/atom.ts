@@ -33,3 +33,8 @@ export const profileState = atom<ProfileAccount>({
     totalPolls: 0,
   }
 });
+
+export const reloaderState = atom<boolean>({
+  key: 'reloaderState',
+  default: false,
+});

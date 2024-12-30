@@ -68,6 +68,7 @@ export const SharePoll = () => {
                 option1Count={pollData.option1Count}
                 option2Count={pollData.option2Count}
                 endTime={new Date(pollData.endTime * 1000)}
+                pollAccountPDA={pollData.pollAccountPDA}
             />}
         </div>
     )

@@ -1,5 +1,5 @@
 import { fetchUser, fetchUserDetails, initializeUser } from "@/anchor/methods";
-import { profileState } from "@/atom";
+import { profileState, reloaderState } from "@/atom";
 import SimpleForm from "@/components/CreatePoll"
 import { Navbar } from "@/components/Navbar";
 import PollDisplay from "@/components/PollDisplay";
@@ -12,11 +12,12 @@ import { useRecoilState } from "recoil";
 
 export const Home = () => {
 	const [profileAccount, setProfileAccount] = useRecoilState(profileState);
-	const [loading, setLoading] = useState(false);
 	const [pollData, setPollData] = useState<PollData[] | null>(null);
+	const [reloader, _setReloader] = useRecoilState(reloaderState);
 	const { publicKey, sendTransaction } = useWallet();
-	const { showAlert } = useAlert();
+	const [loading, setLoading] = useState(false);
 	const { connection } = useConnection();
+	const { showAlert } = useAlert();
 
 	useEffect(()=>{
 		const fetchData = async () => {
@@ -62,7 +63,7 @@ export const Home = () => {
 		}
 
 		fetchUserData();
-	}, [publicKey]);
+	}, [publicKey, reloader]);
 
 	const initUser = async () => {
 		if(!publicKey) {

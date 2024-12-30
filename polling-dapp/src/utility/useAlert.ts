@@ -15,7 +15,7 @@ const useAlert = () => {
     icon?: LucideIcon;
     title?: string;
     description?: string;
-    className?: string;
+    className?: "default" | "destructive" | null | undefined;
     duration?: number;
   }) => {
     setAlert({

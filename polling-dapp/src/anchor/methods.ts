@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { BN, web3 } from '@coral-xyz/anchor';
 import { program } from './setup';
 import { Connection, SystemProgram } from '@solana/web3.js';
