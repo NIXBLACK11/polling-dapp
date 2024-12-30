@@ -5,41 +5,68 @@ import { useNavigate } from 'react-router-dom';
 
 export const Landing = () => {
     const navigate = useNavigate();
+
+    const scrollToSection = (id: string) => {
+        const section = document.getElementById(id);
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+    };
     return (
         <div className="min-h-screen bg-white text-black">
         {/* Navigation */}
-        <nav className="flex justify-between items-center p-6">
+        <nav className="flex justify-between items-center p-6 bg-white fixed top-0 w-full z-50">
             <div className="font-bold flex text-3xl"><Link />ChainPoll</div>
             <div className="space-x-4">
-                <Button variant="outline" onClick={()=>{navigate("/polls")}} className="border-black hover:bg-black hover:text-white">
-                Get Started
-            </Button>
+                <Button
+                    variant="ghost"
+                    className="text-gray-600 hover:text-black"
+                    onClick={() => scrollToSection("features")}
+                >
+                    Features
+                </Button>
+                <Button
+                    variant="ghost"
+                    className="text-gray-600 hover:text-black"
+                    onClick={() => scrollToSection("recommend")}
+                >
+                    Recommend
+                </Button>
+                <Button 
+                    variant="outline" onClick={()=>{navigate("/polls")}} 
+                    className="border-black hover:bg-black hover:text-white"
+                >
+                    Get Started
+                </Button>
             </div>
         </nav>
 
         {/* Hereo Section */}
-        <main className="container mx-auto px-6 py-40 text-center">
-            <h1 className="text-6xl font-bold mb-6">
-            Decentralized Polling
-            <br />
-            Built for Web3
-            </h1>
-            <p className="text-gray-600 text-xl mb-8 max-w-2xl mx-auto">
-            Create secure, verifiable polls that can be shared instantly on Twitter. 
-            Powered by Solana for maximum transparency and security.
-            </p>
-            <div className="space-x-4">
-                <Button className="bg-black text-white hover:bg-gray-800">
-                    Get Started
-                </Button>
-                <Button variant="outline" className="border-black hover:bg-black hover:text-white" onClick={()=>{window.open('https://github.com/NIXBLACK11/polling-dapp', '_blank', 'noopener,noreferrer')}}>
-                    GitHub
-                </Button>
-            </div>
-        </main>
+        <div className="mt-20 h-[50rem] w-full dark:bg-black bg-white  dark:bg-grid-white/[0.2] bg-grid-black/[0.2] relative flex items-center justify-center">
+            <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+            <main className="container mx-auto px-6 py-40 text-center">
+                <h1 className="text-8xl font-bold mb-6">
+                Decentralized Polling
+                <br />
+                Powered by Solana
+                </h1>
+                <p className="text-gray-600 text-2xl mb-8 max-w-2xl mx-auto">
+                Create secure, verifiable polls that can be shared instantly on Twitter. 
+                Powered by Solana for maximum transparency and security.
+                </p>
+                <div className="space-x-4">
+                    <Button className="bg-black text-white hover:bg-gray-800 text-xl">
+                        Get Started
+                    </Button>
+                    <Button variant="outline" className="border-black text-xl hover:bg-black hover:text-white" onClick={()=>{window.open('https://github.com/NIXBLACK11/polling-dapp', '_blank', 'noopener,noreferrer')}}>
+                        GitHub
+                    </Button>
+                </div>
+            </main>
+        </div>
 
         {/* Features */}
-        <section className="container mx-auto px-6 py-24">
+        <section  id="features" className="container mx-auto px-6 py-24">
             <h2 className="text-6xl font-bold mb-12 text-center">Features</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="bg-gray-50 border-gray-200">
@@ -78,7 +105,7 @@ export const Landing = () => {
         </section>
 
         {/* Recommend */}
-        <section className="container mx-auto px-6 py-24">
+        <section  id="recommend" className="container mx-auto px-6 py-24">
         <h2 className="text-6xl font-bold mb-12 text-center">Recommend</h2>
         <div className="max-w-2xl mx-auto">
             <Card className="bg-gray-50 border-gray-200">
