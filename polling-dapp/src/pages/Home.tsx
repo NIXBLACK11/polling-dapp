@@ -119,7 +119,6 @@ export const Home = () => {
 								<SimpleForm />
 						</div>
 						
-						{/* PollDisplays */}
 						{pollData && pollData.length > 0 ? (
 							pollData.map((poll, index) => (
 								<div key={index} className="break-inside-avoid-column mb-4">

@@ -147,7 +147,28 @@ const PollDisplay = ({ polled, authority, idx, description, option1, option2, op
           </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {polled==false ? 
+        {(polled==true || isExpired==true) ? 
+        <div className="space-y-4">
+          <p className="text-lg">{description}</p>
+          <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">{option1}</Label>
+                <span className="text-sm text-muted-foreground">{option1Percent}%</span>
+              </div>
+              <Progress value={option1Percent} className="h-2" />
+              <p className="text-xs text-muted-foreground text-right">{option1Count} votes</p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">{option2}</Label>
+                <span className="text-sm text-muted-foreground">{option2Percent}%</span>
+              </div>
+              <Progress value={option2Percent} className="h-2" />
+              <p className="text-xs text-muted-foreground text-right">{option2Count} votes</p>
+            </div>
+        </div>
+        : 
         <div className="space-y-4">
           <p className="text-lg">{description}</p>
 
@@ -166,26 +187,8 @@ const PollDisplay = ({ polled, authority, idx, description, option1, option2, op
               <Label htmlFor="option2">{option2}</Label>
             </div>
           </RadioGroup>
-        </div> : 
-        <div className="space-y-4">
-          <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">{option1}</Label>
-                <span className="text-sm text-muted-foreground">{option1Percent}%</span>
-              </div>
-              <Progress value={option1Percent} className="h-2" />
-              <p className="text-xs text-muted-foreground text-right">{option1Count} votes</p>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">{option2}</Label>
-                <span className="text-sm text-muted-foreground">{option2Percent}%</span>
-              </div>
-              <Progress value={option2Percent} className="h-2" />
-              <p className="text-xs text-muted-foreground text-right">{option2Count} votes</p>
-            </div>
-        </div>}
+        </div>
+        }
 
         <Button 
           className="w-full" 

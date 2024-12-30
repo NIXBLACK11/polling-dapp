@@ -13,6 +13,7 @@ import { useRecoilValue } from 'recoil';
 import { alertState } from './atom';
 import CustomAlert from './components/Alert';
 import { SharePoll } from './pages/SharePoll';
+import { Landing } from './pages/Landing';
 
 const GlobalAlert = () => {
     const alert = useRecoilValue(alertState);
@@ -44,7 +45,8 @@ function App() {
                 <WalletModalProvider>
                     <GlobalAlert />
                     <Routes>
-                      <Route path="/" element={<Home />} />
+                      <Route path='/' element={<Landing />} />
+                      <Route path="/polls" element={<Home />} />
                       <Route path="/share" element={<SharePoll />} />
                     </Routes>
                 </WalletModalProvider>
