@@ -130,9 +130,11 @@ export const Landing = () => {
         {/* Footer */}
         <footer className="border-t border-gray-200 mt-20">
             <div className="container mx-auto px-6 py-8">
-            <p className="text-center text-gray-600">
-                Proudly Open Source • Built with Rust + Typescript
-            </p>
+                <p className="text-center text-gray-600 items-center">
+                    Proudly Open Source • Built with 
+                    Rust <img src="rust.png" alt="Rust" className="inline-block h-[1.5em] w-[1.5em] mx-1" /> + 
+                    Typescript <img src="ts.png" alt="TypeScript" className="inline-block h-[1em] w-[1.5em] mx-1" />
+                </p>
             </div>
         </footer>
         </div>
