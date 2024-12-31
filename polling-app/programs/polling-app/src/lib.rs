@@ -160,7 +160,7 @@ pub struct MakePoll<'info> {
         seeds = [POLL_TAG, authority.key().as_ref(), &[user_profile.total_polls as u8]],
         bump,
         payer = authority,
-        space = 8 + std::mem::size_of::<PollAccount>(),
+        space = 8 + std::mem::size_of::<PollAccount>() + 200 * 32,
     )]
     pub poll_account: Box<Account<'info, PollAccount>>,
 

@@ -180,19 +180,10 @@ export const selectOption = async (
     publicKey: web3.PublicKey,
     sendTransaction: { (transaction: web3.Transaction | web3.VersionedTransaction, connection: web3.Connection, options?: SendTransactionOptions): Promise<web3.TransactionSignature>; (arg0: web3.Transaction, arg1: web3.Connection): any; },
     connection: web3.Connection,
-    authority: web3.PublicKey,
+    pollAccountPDA: web3.PublicKey,
     idx: number,
     option: number
 ) => {
-    const [pollAccountPDA, _b] = web3.PublicKey.findProgramAddressSync(
-        [
-            Buffer.from(POLL_TAG),
-            authority.toBuffer(),
-            Buffer.from([idx])
-        ],
-        program.programId
-    );
-
     let transactionSignature;
 
     try {
@@ -208,7 +199,7 @@ export const selectOption = async (
         transactionSignature = await sendTransaction(transaction, connection);
         await connection.confirmTransaction(transactionSignature, 'confirmed')
     } catch (err: any) {
-        console.error("Error while making poll:", err);
+        console.error("Error while selecting option:", err);
         return null;
     }
 

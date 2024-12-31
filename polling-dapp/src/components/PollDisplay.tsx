@@ -14,7 +14,6 @@ import { Progress } from './ui/progress';
 
 interface PollProps {
   polled: boolean;
-  authority: PublicKey;
   idx: number;
   description: string;
   option1: string;
@@ -25,7 +24,7 @@ interface PollProps {
   pollAccountPDA: PublicKey;
 }
 
-const PollDisplay = ({ polled, authority, idx, description, option1, option2, option1Count, option2Count, endTime, pollAccountPDA }: PollProps) => {
+const PollDisplay = ({ polled, idx, description, option1, option2, option1Count, option2Count, endTime, pollAccountPDA }: PollProps) => {
   const { showAlert } = useAlert();
   const { connection } = useConnection();
   const [loading, setLoading] = useState<string>();
@@ -89,7 +88,7 @@ const PollDisplay = ({ polled, authority, idx, description, option1, option2, op
       return;
     }
 
-    const tx = await selectOption(publicKey, sendTransaction, connection, authority, idx, option);
+    const tx = await selectOption(publicKey, sendTransaction, connection, pollAccountPDA, idx, option);
 
     if(!tx) {
 			showAlert({

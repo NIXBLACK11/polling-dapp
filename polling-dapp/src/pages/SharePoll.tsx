@@ -60,7 +60,6 @@ export const SharePoll = () => {
 			<Navbar />
             {(pollData) && <PollDisplay
                 polled={pollData.polled}
-                authority={pollData.authority}
                 idx={pollData.idx}
                 description={pollData.description}
                 option1={pollData.option1}

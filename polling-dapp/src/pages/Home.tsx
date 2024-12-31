@@ -125,7 +125,6 @@ export const Home = () => {
 								<div key={index} className="break-inside-avoid-column mb-4">
 								<PollDisplay
 									polled={poll.polled}
-									authority={poll.authority}
 									idx={poll.idx}
 									description={poll.description}
 									option1={poll.option1}
