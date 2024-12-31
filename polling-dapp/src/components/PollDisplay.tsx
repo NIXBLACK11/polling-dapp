@@ -73,7 +73,7 @@ const PollDisplay = ({ polled, idx, description, option1, option2, option1Count,
     setLoading("loading");
     let option = -1;
     if (selectedOption) {
-      if(selectedOption==option1) {
+      if(selectedOption=="option1") {
         option  = 1;
       } else {
         option = 2;
