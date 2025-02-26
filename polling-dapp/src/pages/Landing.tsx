@@ -55,7 +55,7 @@ export const Landing = () => {
                 Powered by Solana for maximum transparency and security.
                 </p>
                 <div className="space-x-4">
-                    <Button className="bg-black text-white hover:bg-gray-800 text-xl">
+                    <Button className="bg-black text-white hover:bg-gray-800 text-xl" onClick={()=>{navigate("/polls")}}>
                         Get Started
                     </Button>
                     <Button variant="outline" className="border-black text-xl hover:bg-black hover:text-white" onClick={()=>{window.open('https://github.com/NIXBLACK11/polling-dapp', '_blank', 'noopener,noreferrer')}}>
